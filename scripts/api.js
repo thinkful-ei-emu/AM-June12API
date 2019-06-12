@@ -3,7 +3,8 @@
 let api = (function () {
   const BASE_URL = 'https://thinkful-list-api.herokuapp.com/Adrienne';
   function getItems(){
-    return Promise.resolve('A successful ressponse!');
+    console.log(Promise.resolve('A successful ressponse!'));
+    fetch(`${BASE_URL}/items`)
   }
   return {getItems};
 })();

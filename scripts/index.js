@@ -9,6 +9,6 @@ $(document).ready(function() {
 store.items.push(Item.create('apples'));
 
 api.getItems()
-  .then(res => console.log(res));
+  .then(res => res.json())
 
 console.log(api.BASE_URL);
