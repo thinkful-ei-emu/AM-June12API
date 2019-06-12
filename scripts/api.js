@@ -24,6 +24,7 @@ let api = (function () {
       body: JSON.stringify(updateData)
     });
   };
+
   return {
     getItems, 
     createItem,

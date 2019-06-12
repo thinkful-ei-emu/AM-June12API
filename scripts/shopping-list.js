@@ -1,5 +1,5 @@
 'use strict';
-/* global store, $ */
+/* global store, api $ */
 
 // eslint-disable-next-line no-unused-vars
 const shoppingList = (function(){
@@ -83,11 +83,19 @@ const shoppingList = (function(){
       .closest('.js-item-element')
       .data('item-id');
   }
-  
+
   function handleItemCheckClicked() {
     $('.js-shopping-list').on('click', '.js-item-toggle', event => {
       const id = getItemIdFromElement(event.currentTarget);
-      store.findAndToggleChecked(id);
+      const foundItem = store.findById(id);
+      console.log(foundItem);
+      let checkValue = foundItem.checked;
+      checkValue = !checkValue;
+      api.updateItem(id, {checked: checkValue})
+        .then(res => res.json())
+        .then((data) => {
+          store.findAndUpdate(id, checkValue);
+        });
       render();
     });
   }
@@ -109,7 +117,11 @@ const shoppingList = (function(){
       event.preventDefault();
       const id = getItemIdFromElement(event.currentTarget);
       const itemName = $(event.currentTarget).find('.shopping-item').val();
-      store.findAndUpdateName(id, itemName);
+      api.updateItem(id, {name: itemName})
+        .then(res => res.json())
+        .then((data) => {
+          store.findAndUpdate(id, itemName);
+        });
       store.setItemIsEditing(id, false);
       render();
     });

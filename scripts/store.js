@@ -29,8 +29,15 @@ const store = (function(){
 
   const findAndUpdate = function(id, newData){
     let foundItem = store.findById(id);
-    Object.assign(foundItem, newData);
-  }
+    console.log(newData);
+    //foundItem is the entire object {name:      id:       checked:   }
+    if (typeof(newData)=== 'boolean'){
+      Object.assign(foundItem, {checked: newData});
+    }
+    else{
+      Object.assign(foundItem, {name: newData});
+    }
+  };
 
   return {
     items: [],
