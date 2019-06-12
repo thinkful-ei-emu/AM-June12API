@@ -7,3 +7,8 @@ $(document).ready(function() {
 });
 
 store.items.push(Item.create('apples'));
+
+api.getItems()
+  .then(res => console.log(res));
+
+console.log(api.BASE_URL);
