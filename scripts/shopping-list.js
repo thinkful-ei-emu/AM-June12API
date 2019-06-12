@@ -72,6 +72,10 @@ const shoppingList = (function(){
         .then((items) => {
           store.addItem(items);
           render();
+        })
+        .catch(err => {
+          store.setError(err.message);
+          render();
         });
       store.addItem(newItemName);
       render();
@@ -95,6 +99,10 @@ const shoppingList = (function(){
         .then(res => res.json())
         .then((data) => {
           store.findAndUpdate(id, checkValue);
+        })
+        .catch(err => {
+          store.setError(err.message);
+          render();
         });
       render();
     });
@@ -106,7 +114,16 @@ const shoppingList = (function(){
       // get the index of the item in store.items
       const id = getItemIdFromElement(event.currentTarget);
       // delete the item
-      store.findAndDelete(id);
+      api.deleteItem(id)
+        .then(res => res.json())
+        .then((items) => {
+          store.findAndDelete(id);
+          render();
+        })
+        .catch(err => {
+          store.setError(err.message);
+          render();
+        });
       // render the updated shopping list
       render();
     });
@@ -121,6 +138,10 @@ const shoppingList = (function(){
         .then(res => res.json())
         .then((data) => {
           store.findAndUpdate(id, itemName);
+        })
+        .catch(err => {
+          store.setError(err.message);
+          render();
         });
       store.setItemIsEditing(id, false);
       render();

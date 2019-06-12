@@ -29,8 +29,6 @@ const store = (function(){
 
   const findAndUpdate = function(id, newData){
     let foundItem = store.findById(id);
-    console.log(newData);
-    //foundItem is the entire object {name:      id:       checked:   }
     if (typeof(newData)=== 'boolean'){
       Object.assign(foundItem, {checked: newData});
     }
@@ -38,6 +36,10 @@ const store = (function(){
       Object.assign(foundItem, {name: newData});
     }
   };
+
+  // const setError = function(message) {
+    
+  // };
 
   return {
     items: [],
