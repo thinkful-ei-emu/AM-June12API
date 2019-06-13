@@ -1,7 +1,10 @@
 'use strict';
-/* global Item */
 // eslint-disable-next-line no-unused-vars
 const store = (function(){
+  const setError = function(error) {
+    this.error = error;
+  };
+  
   const addItem = function(item) {
     this.items.push(item);
   };
@@ -27,19 +30,11 @@ const store = (function(){
     this.searchTerm = term;
   };
 
-  const findAndUpdate = function(id, newData){
-    let foundItem = store.findById(id);
-    if (typeof(newData)=== 'boolean'){
-      Object.assign(foundItem, {checked: newData});
-    }
-    else{
-      Object.assign(foundItem, {name: newData});
-    }
+  const findAndUpdate = function(id, newData) {
+    const item = this.findById(id);
+    Object.assign(item, newData);
   };
 
-  // const setError = function(message) {
-    
-  // };
 
   return {
     items: [],
@@ -51,7 +46,9 @@ const store = (function(){
     toggleCheckedFilter,
     setSearchTerm,
     setItemIsEditing,
-    findAndUpdate
+    findAndUpdate,
+    error: null,
+    setError
   };
   
 }());

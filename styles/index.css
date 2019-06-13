@@ -59,3 +59,23 @@ button:hover:disabled {
   background-color: orange;
   float: right;
 }
+
+.error-message {
+  position: fixed;
+  float: right;
+  border: 2px solid red;
+  background-color: orange;
+}
+
+.error-message p {
+  margin-top: 2px;
+  padding: 5px;
+}
+
+.error-message button {
+  font-size: 10px;
+  background-color: red;
+  color: white;
+  position: relative;
+  left: 85%;
+}

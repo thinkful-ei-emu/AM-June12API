@@ -4,6 +4,16 @@
 // eslint-disable-next-line no-unused-vars
 const shoppingList = (function(){
 
+  function generateError(message) {
+    return `
+      <section class ="error-message">
+        <button id="close-error">X</button>
+        <p>${message}</p>
+      </section>
+      `;
+  }
+
+
   function generateItemElement(item) {
     const checkedClass = item.checked ? 'shopping-item__checked' : '';
     const editBtnStatus = item.checked ? 'disabled' : '';
@@ -41,7 +51,18 @@ const shoppingList = (function(){
   }
   
   
+  function renderError() {
+    if (store.error) {
+      const genErr = generateError(store.error);
+      $('.error-message').html(genErr);
+    } else {
+      $('.error-message').empty();
+    }
+  }
+
+
   function render() {
+    renderError();
     // Filter item list if store prop is true by item.checked === false
     let items = [ ...store.items ];
     if (store.hideCheckedItems) {
@@ -68,17 +89,14 @@ const shoppingList = (function(){
       const newItemName = $('.js-shopping-list-entry').val();
       $('.js-shopping-list-entry').val('');
       api.createItem(newItemName)
-        .then(res => res.json())
         .then((items) => {
           store.addItem(items);
           render();
         })
         .catch(err => {
           store.setError(err.message);
-          render();
+          renderError();
         });
-      store.addItem(newItemName);
-      render();
     });
   }
   
@@ -96,15 +114,15 @@ const shoppingList = (function(){
       let checkValue = foundItem.checked;
       checkValue = !checkValue;
       api.updateItem(id, {checked: checkValue})
-        .then(res => res.json())
-        .then((data) => {
-          store.findAndUpdate(id, checkValue);
+        .then(() => {
+          store.findAndUpdate(id, {checked: checkValue});
+          render();
         })
         .catch(err => {
+          console.log(err);
           store.setError(err.message);
-          render();
+          renderError();
         });
-      render();
     });
   }
   
@@ -115,17 +133,15 @@ const shoppingList = (function(){
       const id = getItemIdFromElement(event.currentTarget);
       // delete the item
       api.deleteItem(id)
-        .then(res => res.json())
-        .then((items) => {
+        .then(() => {
           store.findAndDelete(id);
           render();
         })
         .catch(err => {
+          console.log(err);
           store.setError(err.message);
-          render();
+          renderError();
         });
-      // render the updated shopping list
-      render();
     });
   }
   
@@ -135,16 +151,16 @@ const shoppingList = (function(){
       const id = getItemIdFromElement(event.currentTarget);
       const itemName = $(event.currentTarget).find('.shopping-item').val();
       api.updateItem(id, {name: itemName})
-        .then(res => res.json())
-        .then((data) => {
-          store.findAndUpdate(id, itemName);
+        .then(() => {
+          store.findAndUpdate(id, {name: itemName});
+          store.setItemIsEditing(id. false);
+          console.log(render());
         })
         .catch(err => {
+          console.log(err);
           store.setError(err.message);
-          render();
+          renderError();
         });
-      store.setItemIsEditing(id, false);
-      render();
     });
   }
   
@@ -171,6 +187,13 @@ const shoppingList = (function(){
     });
   }
   
+  function handleCloseError() {
+    $('.error-message').on('click', '#close-error', () => {
+      store.setError(null);
+      renderError();
+    });
+  }
+
   function bindEventListeners() {
     handleNewItemSubmit();
     handleItemCheckClicked();
@@ -179,6 +202,7 @@ const shoppingList = (function(){
     handleToggleFilterClick();
     handleShoppingListSearch();
     handleItemStartEditing();
+    handleCloseError();
   }
 
   // This object contains the only exposed methods from this module:
